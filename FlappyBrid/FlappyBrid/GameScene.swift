@@ -9,14 +9,14 @@
 import SpriteKit
 
 struct PhysicsCatagory {
-    static let Ghost : UInt32 = 0x1 << 1
-    static let Ground : UInt32 = 0x1 << 2
-    static let Wall : UInt32 = 0x1 << 3
-    static let Line : UInt32 = 0x1 << 4
+    static let Ghost    : UInt32 = 0x1 << 1
+    static let Ground   : UInt32 = 0x1 << 2
+    static let Wall     : UInt32 = 0x1 << 3
+    static let Score    : UInt32 = 0x1 << 4
 }
 
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate{
     
     var ground = SKSpriteNode()
     var ghost = SKSpriteNode()
@@ -28,6 +28,9 @@ class GameScene: SKScene {
     var gameStarted = Bool()
     
     override func didMoveToView(view: SKView) {
+        
+        
+        self.physicsWorld.contactDelegate = self
         
         ground = SKSpriteNode(imageNamed: "ground")
         ground.setScale(0.5)
@@ -53,7 +56,7 @@ class GameScene: SKScene {
         ghost.physicsBody = SKPhysicsBody(circleOfRadius: ghost.frame.height/2)
         ghost.physicsBody?.categoryBitMask = PhysicsCatagory.Ghost
         ghost.physicsBody?.collisionBitMask = PhysicsCatagory.Ground | PhysicsCatagory.Wall
-        ghost.physicsBody?.contactTestBitMask = PhysicsCatagory.Ground | PhysicsCatagory.Wall
+        ghost.physicsBody?.contactTestBitMask = PhysicsCatagory.Ground | PhysicsCatagory.Wall | PhysicsCatagory.Score
         ghost.physicsBody?.dynamic = true
         ghost.physicsBody?.affectedByGravity = false
         
@@ -61,6 +64,11 @@ class GameScene: SKScene {
         
         self.addChild(ghost)
 
+    }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        
+        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -98,6 +106,17 @@ class GameScene: SKScene {
     
     
     func creatWalls() {
+        
+        let scoreNode = SKSpriteNode()
+        
+        scoreNode.size = CGSize(width: 1, height: 200)
+        scoreNode.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
+        scoreNode.physicsBody = SKPhysicsBody(rectangleOfSize: scoreNode.size)
+        scoreNode.physicsBody?.affectedByGravity = false
+        scoreNode.physicsBody?.dynamic = false
+        scoreNode.physicsBody?.categoryBitMask = PhysicsCatagory.Score
+        scoreNode.physicsBody?.collisionBitMask = 0
+        scoreNode.physicsBody?.contactTestBitMask = PhysicsCatagory.Ghost
         
         wallPair = SKNode()
         
