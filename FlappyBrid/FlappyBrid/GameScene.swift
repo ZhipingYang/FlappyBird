@@ -41,7 +41,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         scoreLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 + self.frame.height/2.5)
         scoreLabel.text = "\(score)"
-        scoreLabel.fontSize = 33
+        scoreLabel.fontSize = 60
         scoreLabel.zPosition = 5
         self.addChild(scoreLabel)
         
@@ -66,7 +66,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         ghost.size = CGSize(width: 60, height: 70)
         ghost.position = CGPoint(x: self.frame.width/2 - ghost.frame.width, y: self.frame.height/2)
         
-        ghost.physicsBody = SKPhysicsBody(circleOfRadius: ghost.frame.height/2)
+        ghost.physicsBody = SKPhysicsBody(rectangleOfSize: ghost.size)
         ghost.physicsBody?.categoryBitMask = PhysicsCatagory.Ghost
         ghost.physicsBody?.collisionBitMask = PhysicsCatagory.Ground | PhysicsCatagory.Wall
         ghost.physicsBody?.contactTestBitMask = PhysicsCatagory.Ground | PhysicsCatagory.Wall | PhysicsCatagory.Score
@@ -96,7 +96,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func creatBtn () {
         restartBtn = SKLabelNode(text: "RESTART")
         restartBtn.color = SKColor.blueColor()
-        restartBtn.fontSize = 40
+        restartBtn.fontSize = 50
         restartBtn.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
         restartBtn.zPosition = 6
         self.addChild(restartBtn)
@@ -113,6 +113,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 score++
                 print("\(score)")
                 scoreLabel.text = "\(score)"
+                
+                if firstBody.categoryBitMask == PhysicsCatagory.Score {
+                    firstBody.node?.removeFromParent()
+                } else {
+                    secondBody.node?.removeFromParent()
+                }
         }
         
         if (firstBody.categoryBitMask == PhysicsCatagory.Ghost && secondBody.categoryBitMask == PhysicsCatagory.Wall )
@@ -121,6 +127,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         || (firstBody.categoryBitMask == PhysicsCatagory.Ghost && secondBody.categoryBitMask == PhysicsCatagory.Ground){
                 died = true
                 creatBtn()
+            self.removeAllActions()
+            
+            enumerateChildNodesWithName("wallPair", usingBlock:{
+                (node, error) -> Void in
+                node.speed = 0
+                self.removeAllActions()
+            })
         }
     }
     
@@ -190,6 +203,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         scoreNode.color = SKColor.greenColor()
         
         wallPair = SKNode()
+        wallPair.name = "wallPair"
         
         let topwall = SKSpriteNode(imageNamed: "wall")
         let btmwall = SKSpriteNode(imageNamed: "wall")
