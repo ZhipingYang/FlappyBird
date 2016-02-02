@@ -27,20 +27,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     let scoreLabel = SKLabelNode()
     
+    var restartBtn = SKLabelNode()
+    
     var died = Bool()
     
     var gameStarted = Bool()
     
     var score = Int()
     
-    
-    override func didMoveToView(view: SKView) {
-        
+    func creatScene() {
         
         self.physicsWorld.contactDelegate = self
         
         scoreLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 + self.frame.height/2.5)
         scoreLabel.text = "\(score)"
+        scoreLabel.fontSize = 33
         scoreLabel.zPosition = 5
         self.addChild(scoreLabel)
         
@@ -78,6 +79,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
 
     }
     
+    func restartScene() {
+        
+        self.removeAllActions()
+        self.removeAllChildren()
+        died = false
+        gameStarted = false
+        score = 0
+        creatScene()
+    }
+    
+    override func didMoveToView(view: SKView) {
+        creatScene()
+    }
+    
+    func creatBtn () {
+        restartBtn = SKLabelNode(text: "RESTART")
+        restartBtn.color = SKColor.blueColor()
+        restartBtn.fontSize = 40
+        restartBtn.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
+        restartBtn.zPosition = 6
+        self.addChild(restartBtn)
+        restartBtn.runAction(SKAction.scaleTo(1.0, duration: 0.4))
+    }
+    
     func didBeginContact(contact: SKPhysicsContact) {
         
         let firstBody = contact.bodyA
@@ -91,8 +116,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
         
         if (firstBody.categoryBitMask == PhysicsCatagory.Ghost && secondBody.categoryBitMask == PhysicsCatagory.Wall )
-            || (firstBody.categoryBitMask == PhysicsCatagory.Wall && secondBody.categoryBitMask == PhysicsCatagory.Ghost) {
+        || (firstBody.categoryBitMask == PhysicsCatagory.Wall && secondBody.categoryBitMask == PhysicsCatagory.Ghost)
+        || (firstBody.categoryBitMask == PhysicsCatagory.Ground && secondBody.categoryBitMask == PhysicsCatagory.Ghost)
+        || (firstBody.categoryBitMask == PhysicsCatagory.Ghost && secondBody.categoryBitMask == PhysicsCatagory.Ground){
                 died = true
+                creatBtn()
         }
     }
     
@@ -134,7 +162,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             
         }
         
+        
+        for touch in touches {
+            let location = touch.locationInNode(self)
+            if died == true {
+                if restartBtn.containsPoint(location){
+                    restartScene()
+                }
+            }
+        }
     }
+    
     
     
     func creatWalls() {
