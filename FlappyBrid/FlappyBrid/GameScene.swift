@@ -25,12 +25,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
 
     var moveAndRemove = SKAction()
     
+    let scoreLabel = SKLabelNode()
+    
+    var died = Bool()
+    
     var gameStarted = Bool()
+    
+    var score = Int()
+    
     
     override func didMoveToView(view: SKView) {
         
         
         self.physicsWorld.contactDelegate = self
+        
+        scoreLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2 + self.frame.height/2.5)
+        scoreLabel.text = "\(score)"
+        scoreLabel.zPosition = 5
+        self.addChild(scoreLabel)
         
         ground = SKSpriteNode(imageNamed: "ground")
         ground.setScale(0.5)
@@ -68,7 +80,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     func didBeginContact(contact: SKPhysicsContact) {
         
+        let firstBody = contact.bodyA
+        let secondBody = contact.bodyB
         
+        if (firstBody.categoryBitMask == PhysicsCatagory.Score && secondBody.categoryBitMask == PhysicsCatagory.Ghost)
+            || (firstBody.categoryBitMask == PhysicsCatagory.Ghost && secondBody.categoryBitMask == PhysicsCatagory.Score) {
+                score++
+                print("\(score)")
+                scoreLabel.text = "\(score)"
+        }
+        
+        if (firstBody.categoryBitMask == PhysicsCatagory.Ghost && secondBody.categoryBitMask == PhysicsCatagory.Wall )
+            || (firstBody.categoryBitMask == PhysicsCatagory.Wall && secondBody.categoryBitMask == PhysicsCatagory.Ghost) {
+                died = true
+        }
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -98,8 +123,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             ghost.physicsBody?.applyImpulse(CGVectorMake(0, 90))
 
         } else {
-            ghost.physicsBody?.velocity = CGVectorMake(0, 0)
-            ghost.physicsBody?.applyImpulse(CGVectorMake(0, 90))
+            
+            if died == true {
+                
+            } else {
+                ghost.physicsBody?.velocity = CGVectorMake(0, 0)
+                ghost.physicsBody?.applyImpulse(CGVectorMake(0, 90))
+            
+            }
+            
         }
         
     }
@@ -110,13 +142,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let scoreNode = SKSpriteNode()
         
         scoreNode.size = CGSize(width: 1, height: 200)
-        scoreNode.position = CGPoint(x: self.frame.width/2, y: self.frame.height/2)
+        scoreNode.position = CGPoint(x: self.frame.width, y: self.frame.height/2)
         scoreNode.physicsBody = SKPhysicsBody(rectangleOfSize: scoreNode.size)
         scoreNode.physicsBody?.affectedByGravity = false
         scoreNode.physicsBody?.dynamic = false
         scoreNode.physicsBody?.categoryBitMask = PhysicsCatagory.Score
         scoreNode.physicsBody?.collisionBitMask = 0
         scoreNode.physicsBody?.contactTestBitMask = PhysicsCatagory.Ghost
+        scoreNode.color = SKColor.greenColor()
         
         wallPair = SKNode()
         
@@ -153,6 +186,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         let randomPosition = CGFloat.random(min: -200, max: 200)
         wallPair.position.y = wallPair.position.y + randomPosition
+        wallPair.addChild(scoreNode)
         
         wallPair.runAction(moveAndRemove)
         
@@ -161,6 +195,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     
     override func update(currentTime: CFTimeInterval) {
+        
     }
 }
 
