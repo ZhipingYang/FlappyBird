@@ -131,12 +131,32 @@ class GameScene: SKScene {
         wallPair.addChild(btmwall)
         
         wallPair.zPosition = 1
+        
+        let randomPosition = CGFloat.random(min: -200, max: 200)
+        wallPair.position.y = wallPair.position.y + randomPosition
+        
         wallPair.runAction(moveAndRemove)
-
+        
         self.addChild(wallPair)
     }
     
     
     override func update(currentTime: CFTimeInterval) {
+    }
+}
+
+
+
+public extension CGFloat{
+    
+    
+    public static func random() -> CGFloat{
+        
+        return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
+    }
+    
+    public static func random(min min : CGFloat, max : CGFloat) -> CGFloat{
+        
+        return CGFloat.random() * (max - min) + min
     }
 }
