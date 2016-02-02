@@ -22,6 +22,10 @@ class GameScene: SKScene {
     var ghost = SKSpriteNode()
     
     var wallPair = SKNode()
+
+    var moveAndRemove = SKAction()
+    
+    var gameStarted = Bool()
     
     override func didMoveToView(view: SKView) {
         
@@ -57,13 +61,39 @@ class GameScene: SKScene {
         
         self.addChild(ghost)
 
-        self.creatWalls()
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        ghost.physicsBody?.affectedByGravity = true
-        ghost.physicsBody?.velocity = CGVectorMake(0, 0)
-        ghost.physicsBody?.applyImpulse(CGVectorMake(0, 90))
+        
+        if gameStarted == false {
+            
+            gameStarted = true
+            
+            ghost.physicsBody?.affectedByGravity = true
+            
+            let spawn = SKAction.runBlock({
+                () in
+                self.creatWalls()
+            })
+            
+            let delay = SKAction.waitForDuration(2.0)
+            let spawnDelay = SKAction.sequence([spawn,delay])
+            let spawnDelayForever = SKAction.repeatActionForever(spawnDelay)
+            self.runAction(spawnDelayForever)
+            
+            let distance = CGFloat(self.frame.width + wallPair.frame.width)
+            let movePipes = SKAction.moveByX(-distance, y: 0, duration: NSTimeInterval(0.01 * distance))
+            let removePipes = SKAction.removeFromParent()
+            moveAndRemove = SKAction.sequence([movePipes,removePipes])
+            
+            ghost.physicsBody?.velocity = CGVectorMake(0, 0)
+            ghost.physicsBody?.applyImpulse(CGVectorMake(0, 90))
+
+        } else {
+            ghost.physicsBody?.velocity = CGVectorMake(0, 0)
+            ghost.physicsBody?.applyImpulse(CGVectorMake(0, 90))
+        }
+        
     }
     
     
@@ -101,7 +131,8 @@ class GameScene: SKScene {
         wallPair.addChild(btmwall)
         
         wallPair.zPosition = 1
-        
+        wallPair.runAction(moveAndRemove)
+
         self.addChild(wallPair)
     }
     
