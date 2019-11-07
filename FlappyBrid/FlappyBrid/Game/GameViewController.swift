@@ -21,17 +21,22 @@ class GameViewController: UIViewController {
             return .all
         }
     }
+    
+    override func loadView() {
+        self.view = SKView()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         guard
-            let scene = GameScene(fileNamed:"GameScene"),
+            let scene = GameScene(fileNamed: "GameScene"),
             let skView = self.view as? SKView
             else { return }
+        scene.scaleMode = .aspectFill
+        
         skView.showsFPS = true
         skView.showsNodeCount = true
         skView.ignoresSiblingOrder = true
-        scene.scaleMode = .aspectFill
         skView.presentScene(scene)
     }
 }
