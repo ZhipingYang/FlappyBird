@@ -10,10 +10,8 @@ import UIKit
 import SpriteKit
 
 class GameViewController: UIViewController {
-    
-    override var shouldAutorotate: Bool { true }
-    override var prefersStatusBarHidden: Bool { return true }
-    
+    override var shouldAutorotate : Bool { true }
+    override var prefersStatusBarHidden: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
             return .allButUpsideDown
@@ -21,22 +19,22 @@ class GameViewController: UIViewController {
             return .all
         }
     }
-    
-    override func loadView() {
-        self.view = SKView()
-    }
 
+    override func loadView() {
+        view = SKView()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         guard
             let scene = GameScene(fileNamed: "GameScene"),
             let skView = self.view as? SKView
-            else { return }
+        else { return }
         scene.scaleMode = .aspectFill
         
+        skView.ignoresSiblingOrder = true
         skView.showsFPS = true
         skView.showsNodeCount = true
-        skView.ignoresSiblingOrder = true
         skView.presentScene(scene)
     }
 }

@@ -12,13 +12,23 @@ class TapViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor(white: 0.9, alpha: 1)
+        let restartBtn = UIButton(type: .roundedRect).then {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.addTarget(self, action: #selector(restart), for: .touchUpInside)
+            $0.setTitle("Restart", for: .normal)
+            view.addSubview($0)
+        }
+        NSLayoutConstraint.activate([
+            restartBtn.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            restartBtn.topAnchor.constraint(equalTo: view.topAnchor, constant: 80)
+        ])
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard let touch = touches.first else { return }
-        ControlCentre.trigger(touch)
+        ControlCentre.trigger(.touch(touch))
         
         let dot = UIView().then {
             $0.isUserInteractionEnabled = false
@@ -35,5 +45,9 @@ class TapViewController: UIViewController {
         }) { (finished) in
             dot.removeFromSuperview()
         }
+    }
+    
+    @objc func restart() {
+        ControlCentre.trigger(.restart)
     }
 }

@@ -8,8 +8,13 @@
 
 import UIKit
 
+enum EventType {
+    case touch(_ touch: UITouch)
+    case restart
+}
+
 protocol ControlCentreDelegate {
-    func callback(_ touch: UITouch)
+    func callback(_ event: EventType)
 }
 
 class ControlCentre {
@@ -25,7 +30,7 @@ class ControlCentre {
         share.delegates.remove(delegate)
     }
     
-    class func trigger(_ touch: UITouch) {
-        share.delegates.allObjects.forEach { ($0 as? ControlCentreDelegate)?.callback(touch) }
+    class func trigger(_ event: EventType) {
+        share.delegates.allObjects.forEach { ($0 as? ControlCentreDelegate)?.callback(event) }
     }
 }
