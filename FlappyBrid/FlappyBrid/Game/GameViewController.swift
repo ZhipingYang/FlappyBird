@@ -6,11 +6,11 @@
 //  Copyright (c) 2016 XcodeYang. All rights reserved.
 //
 
-import UIKit
 import SpriteKit
+import UIKit
 
 class GameViewController: UIViewController {
-    override var shouldAutorotate : Bool { true }
+    override var shouldAutorotate: Bool { true }
     override var prefersStatusBarHidden: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
@@ -23,7 +23,7 @@ class GameViewController: UIViewController {
     override func loadView() {
         view = SKView()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         guard
@@ -31,7 +31,7 @@ class GameViewController: UIViewController {
             let skView = self.view as? SKView
         else { return }
         scene.scaleMode = .aspectFill
-        
+
         skView.ignoresSiblingOrder = true
         skView.showsFPS = true
         skView.showsNodeCount = true

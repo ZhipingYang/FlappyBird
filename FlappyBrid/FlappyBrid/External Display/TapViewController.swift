@@ -9,7 +9,6 @@
 import UIKit
 
 class TapViewController: UIViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(white: 0.9, alpha: 1)
@@ -21,15 +20,15 @@ class TapViewController: UIViewController {
         }
         NSLayoutConstraint.activate([
             restartBtn.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            restartBtn.topAnchor.constraint(equalTo: view.topAnchor, constant: 80)
+            restartBtn.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
         ])
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard let touch = touches.first else { return }
         ControlCentre.trigger(.touch(touch))
-        
+
         let dot = UIView().then {
             $0.isUserInteractionEnabled = false
             $0.backgroundColor = .lightGray
@@ -42,11 +41,11 @@ class TapViewController: UIViewController {
         UIView.animate(withDuration: 0.6, animations: {
             dot.alpha = 0
             dot.transform = CGAffineTransform(scaleX: 5, y: 5)
-        }) { (finished) in
+        }) { finished in
             dot.removeFromSuperview()
         }
     }
-    
+
     @objc func restart() {
         ControlCentre.trigger(.restart)
     }
