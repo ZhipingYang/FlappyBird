@@ -9,7 +9,7 @@
 import UIKit
 
 enum EventType {
-    case touch(_ touch: UITouch)
+    case touch(_ touch: UITouch?)
     case restart
 }
 

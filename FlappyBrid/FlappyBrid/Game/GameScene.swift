@@ -145,7 +145,7 @@ class GameScene: SKScene {
         bird.zRotation = min(max(-1, value), 0.5)
     }
 
-    private func touchAction() {
+    @objc private func touchAction() {
         if !isUserInteractionEnabled { return }
 
         if moving.speed > 0 {
