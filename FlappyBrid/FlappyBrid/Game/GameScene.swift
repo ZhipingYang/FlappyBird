@@ -30,6 +30,7 @@ struct GamezPosition {
     static let pipe: CGFloat = -1
     static let score: CGFloat = 1
     static let result: CGFloat = 2
+    static let resultText: CGFloat = 3
 }
 
 class GameScene: SKScene {
@@ -216,6 +217,7 @@ class GameScene: SKScene {
         canRestart = false
         pipes.removeAllChildren()
         resultNode.removeFromParent()
+        touchAction()
     }
 
     func gameOver() {

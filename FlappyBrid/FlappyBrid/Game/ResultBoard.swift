@@ -11,17 +11,20 @@ import SpriteKit
 
 class ResultBoard: SKSpriteNode {
     private lazy var currentScore = SKLabelNode(fontNamed: "MarkerFelt-Wide").then {
+        $0.zPosition = GamezPosition.resultText
         $0.fontSize = 16
         $0.fontColor = SKColor.darkText
     }
 
     private lazy var bestScore = SKLabelNode(fontNamed: "MarkerFelt-Wide").then {
+        $0.zPosition = GamezPosition.resultText
         $0.fontSize = 16
         $0.fontColor = SKColor.darkText
         $0.text = String(ResultBoard.bestScore())
     }
 
     private lazy var medal = SKLabelNode(fontNamed: "MarkerFelt-Wide").then {
+        $0.zPosition = GamezPosition.resultText
         $0.fontSize = 30
         $0.fontColor = SKColor.orange
     }
