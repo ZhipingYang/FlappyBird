@@ -6,8 +6,8 @@
 //  Copyright © 2019 RingCentral. All rights reserved.
 //
 
-import UIKit
 import Then
+import UIKit
 
 class ScreenMirror: NSObject {
     static let share = ScreenMirror()

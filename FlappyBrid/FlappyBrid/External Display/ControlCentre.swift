@@ -9,7 +9,7 @@
 import UIKit
 
 enum EventType {
-    case touch(_ touch: UITouch)
+    case touch(_ touch: UITouch?)
     case restart
 }
 
@@ -25,11 +25,11 @@ class ControlCentre {
         if share.delegates.contains(delegate) { return }
         share.delegates.add(delegate)
     }
-    
+
     class func remove(_ delegate: ControlCentreDelegate & AnyObject) {
         share.delegates.remove(delegate)
     }
-    
+
     class func trigger(_ event: EventType) {
         share.delegates.allObjects.forEach { ($0 as? ControlCentreDelegate)?.callback(event) }
     }
