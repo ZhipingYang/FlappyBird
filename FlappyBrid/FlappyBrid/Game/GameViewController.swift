@@ -10,11 +10,10 @@ import SpriteKit
 import UIKit
 
 class GameViewController: UIViewController {
-    
     override var shouldAutorotate: Bool { true }
     override var prefersStatusBarHidden: Bool { true }
     override var canBecomeFirstResponder: Bool { true }
-    
+
     override var keyCommands: [UIKeyCommand]? { [
         UIKeyCommand(input: "j", modifierFlags: .command, action: #selector(commandAction(_:)), discoverabilityTitle: "Jump"),
         UIKeyCommand(input: "r", modifierFlags: .command, action: #selector(commandAction(_:)), discoverabilityTitle: "Restart"),
