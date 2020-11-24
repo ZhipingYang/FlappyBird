@@ -246,7 +246,8 @@ extension GameScene: SKPhysicsContactDelegate {
                 SKAction.scale(to: 1.0, duration: 0.1),
             ]))
         } else {
-            gameOver()
+            ControlCentre.trigger(.gameover)
+
             isUserInteractionEnabled = false
 
             removeAction(forKey: "flash_background_color")
@@ -270,6 +271,8 @@ extension GameScene: ControlCentreDelegate {
             touchAction()
         case .restart:
             resetScene()
+        case .gameover:
+            gameOver()
         }
     }
 }

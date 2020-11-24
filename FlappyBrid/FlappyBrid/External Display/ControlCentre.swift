@@ -12,6 +12,7 @@ import UIKit
 enum EventType {
     case touch(_ touch: UITouch?)
     case restart
+    case gameover
 }
 
 protocol ControlCentreDelegate {
@@ -44,15 +45,24 @@ extension ControlCentre {
     private func addNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(didConnectController), name: .GCControllerDidConnect, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didDisconnectController), name: .GCControllerDidDisconnect, object: nil)
+        GCController.startWirelessControllerDiscovery {
+            print("there are no any game controller!")
+        }
     }
 
     @objc func didConnectController(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
         let handler: GCControllerButtonValueChangedHandler = { button, value, pressed in
             guard pressed else { return }
+            print(button)
+            print(value)
+            print(pressed)
             ControlCentre.trigger(.touch(nil))
         }
+        controller.extendedGamepad?.leftThumbstick.up.pressedChangedHandler = handler
+        controller.extendedGamepad?.rightThumbstick.up.pressedChangedHandler = handler
         controller.extendedGamepad?.dpad.up.pressedChangedHandler = handler
+
         controller.extendedGamepad?.buttonA.pressedChangedHandler = handler
         controller.extendedGamepad?.buttonB.pressedChangedHandler = handler
         controller.extendedGamepad?.buttonX.pressedChangedHandler = handler
