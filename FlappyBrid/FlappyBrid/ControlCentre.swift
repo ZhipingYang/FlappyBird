@@ -10,8 +10,8 @@ import GameController
 import UIKit
 
 enum EventType {
-    case touch(_ touch: UITouch?)
-    case restart
+    enum JumpType: Int { case keyboard, touch, buttonA, rightTrigger }
+    case jump(_ type: JumpType)
     case gameover
 }
 
@@ -33,7 +33,9 @@ class ControlCentre {
     }
 
     class func remove(_ delegate: ControlCentreDelegate & AnyObject) {
-        share.delegates.remove(delegate)
+        if share.delegates.contains(delegate) {
+            share.delegates.remove(delegate)
+        }
     }
 
     class func trigger(_ event: EventType) {
@@ -52,22 +54,25 @@ extension ControlCentre {
 
     @objc func didConnectController(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
-        let handler: GCControllerButtonValueChangedHandler = { button, value, pressed in
+        let buttonAHandler: GCControllerButtonValueChangedHandler = { button, value, pressed in
+            print("buttonA:\(button) value:\(value) pressed:\(pressed)")
             guard pressed else { return }
-            print(button)
-            print(value)
-            print(pressed)
-            ControlCentre.trigger(.touch(nil))
+            ControlCentre.trigger(.jump(.buttonA))
         }
-        controller.extendedGamepad?.leftThumbstick.up.pressedChangedHandler = handler
-        controller.extendedGamepad?.rightThumbstick.up.pressedChangedHandler = handler
-        controller.extendedGamepad?.dpad.up.pressedChangedHandler = handler
+        let rightTriggerHandler: GCControllerButtonValueChangedHandler = { button, value, pressed in
+            print("rightTrigger:\(button) value:\(value) pressed:\(pressed)")
+            guard pressed else { return }
+            ControlCentre.trigger(.jump(.rightTrigger))
+        }
+        controller.extendedGamepad?.buttonA.pressedChangedHandler = buttonAHandler
+        controller.extendedGamepad?.rightTrigger.pressedChangedHandler = rightTriggerHandler
 
-        controller.extendedGamepad?.buttonA.pressedChangedHandler = handler
-        controller.extendedGamepad?.buttonB.pressedChangedHandler = handler
-        controller.extendedGamepad?.buttonX.pressedChangedHandler = handler
-        controller.extendedGamepad?.buttonY.pressedChangedHandler = handler
+        let thumbstickHandler: GCControllerDirectionPadValueChangedHandler = { directionPad, x, y in
+            print("directionPad:\(directionPad) x:\(x) y:\(y)")
+        }
+        controller.extendedGamepad?.leftThumbstick.valueChangedHandler = thumbstickHandler
+        controller.extendedGamepad?.rightThumbstick.valueChangedHandler = thumbstickHandler
     }
 
-    @objc func didDisconnectController() {}
+    @objc func didDisconnectController(_ notification: Notification) {}
 }

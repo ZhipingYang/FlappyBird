@@ -63,12 +63,11 @@ class TapViewController: UIViewController {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        guard let touch = touches.first else { return }
-        ControlCentre.trigger(.touch(touch))
+        ControlCentre.trigger(.jump(.touch))
     }
 
     @objc func actionClick() {
-        ControlCentre.trigger(.touch(nil))
+        ControlCentre.trigger(.jump(.touch))
     }
 }
 
@@ -76,11 +75,13 @@ extension TapViewController: ControlCentreDelegate {
     func callback(_ event: EventType) {
         if case .gameover = event {
             actionBtn.setTitle("Restart", for: .normal)
+            actionBtn.backgroundColor = .red
         } else {
             actionBtn.setTitle("Jump", for: .normal)
+            actionBtn.backgroundColor = .lightGray
         }
 
-        guard case .touch = event else { return }
+        guard case .jump = event else { return }
 
         let dot = UIView().then {
             $0.isUserInteractionEnabled = false

@@ -11,9 +11,13 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var newWindow: UIWindow?
+//    var newWindow: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         ScreenMirror.share.start()
+
+        if #available(iOS 14.0, *) {
+            HapticsManager.share.start()
+        }
         return true
     }
 

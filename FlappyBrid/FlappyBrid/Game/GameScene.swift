@@ -136,8 +136,7 @@ class GameScene: SKScene {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        ControlCentre.trigger(.touch(touch))
+        ControlCentre.trigger(.jump(.touch))
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -267,10 +266,10 @@ extension GameScene: SKPhysicsContactDelegate {
 extension GameScene: ControlCentreDelegate {
     func callback(_ event: EventType) {
         switch event {
-        case .touch:
+        case .jump:
             touchAction()
-        case .restart:
-            resetScene()
+        //        case .restart:
+        //            resetScene()
         case .gameover:
             gameOver()
         }

@@ -10,6 +10,9 @@
 		04A019AFB1575B8BF6F37FC2 /* Pods_FlappyBrid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C3A761374E629348A3D2E08 /* Pods_FlappyBrid.framework */; };
 		DB4BF5C2237450F200EFE4BE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4BF5C1237450F200EFE4BE /* GameScene.swift */; };
 		DB4BF5C62374765100EFE4BE /* ResultBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4BF5C52374765100EFE4BE /* ResultBoard.swift */; };
+		DB7F1B80256D020100370252 /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7F1B7F256D020100370252 /* HapticsManager.swift */; };
+		DB7F1B83256D2A9B00370252 /* jump.ahap in Resources */ = {isa = PBXBuildFile; fileRef = DB7F1B82256D2A9B00370252 /* jump.ahap */; };
+		DB7F1B8B256D305000370252 /* dead.ahap in Resources */ = {isa = PBXBuildFile; fileRef = DB7F1B8A256D305000370252 /* dead.ahap */; };
 		DB91B0DA237269830054530A /* ScreenMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB91B0D9237269830054530A /* ScreenMirror.swift */; };
 		DBC388C923740302008A0481 /* TapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC388C823740302008A0481 /* TapViewController.swift */; };
 		DBC388CF23740E64008A0481 /* ControlCentre.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC388CE23740E64008A0481 /* ControlCentre.swift */; };
@@ -27,6 +30,9 @@
 		954CB671BD2CA0C4D21F2ABF /* Pods-FlappyBrid.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlappyBrid.release.xcconfig"; path = "Target Support Files/Pods-FlappyBrid/Pods-FlappyBrid.release.xcconfig"; sourceTree = "<group>"; };
 		DB4BF5C1237450F200EFE4BE /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		DB4BF5C52374765100EFE4BE /* ResultBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultBoard.swift; sourceTree = "<group>"; };
+		DB7F1B7F256D020100370252 /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
+		DB7F1B82256D2A9B00370252 /* jump.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = jump.ahap; sourceTree = "<group>"; };
+		DB7F1B8A256D305000370252 /* dead.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dead.ahap; sourceTree = "<group>"; };
 		DB91B0D9237269830054530A /* ScreenMirror.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenMirror.swift; sourceTree = "<group>"; };
 		DBC388C823740302008A0481 /* TapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapViewController.swift; sourceTree = "<group>"; };
 		DBC388CE23740E64008A0481 /* ControlCentre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCentre.swift; sourceTree = "<group>"; };
@@ -80,16 +86,6 @@
 			path = Game;
 			sourceTree = "<group>";
 		};
-		DB91B0D82372691A0054530A /* External Display */ = {
-			isa = PBXGroup;
-			children = (
-				DB91B0D9237269830054530A /* ScreenMirror.swift */,
-				DBC388C823740302008A0481 /* TapViewController.swift */,
-				DBC388CE23740E64008A0481 /* ControlCentre.swift */,
-			);
-			path = "External Display";
-			sourceTree = "<group>";
-		};
 		F020136F1C60592F003F8A04 = {
 			isa = PBXGroup;
 			children = (
@@ -111,9 +107,14 @@
 		F020137A1C60592F003F8A04 /* FlappyBrid */ = {
 			isa = PBXGroup;
 			children = (
-				DB91B0D82372691A0054530A /* External Display */,
+				DB91B0D9237269830054530A /* ScreenMirror.swift */,
+				DBC388CE23740E64008A0481 /* ControlCentre.swift */,
+				DB7F1B7F256D020100370252 /* HapticsManager.swift */,
+				DB7F1B82256D2A9B00370252 /* jump.ahap */,
+				DB7F1B8A256D305000370252 /* dead.ahap */,
 				DB91B0D7237269070054530A /* Game */,
 				F020137B1C60592F003F8A04 /* AppDelegate.swift */,
+				DBC388C823740302008A0481 /* TapViewController.swift */,
 				F02013831C60592F003F8A04 /* Main.storyboard */,
 				F02013861C60592F003F8A04 /* Assets.xcassets */,
 				F02013881C60592F003F8A04 /* LaunchScreen.storyboard */,
@@ -184,6 +185,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB7F1B8B256D305000370252 /* dead.ahap in Resources */,
+				DB7F1B83256D2A9B00370252 /* jump.ahap in Resources */,
 				F020137E1C60592F003F8A04 /* GameScene.sks in Resources */,
 				F020138A1C60592F003F8A04 /* LaunchScreen.storyboard in Resources */,
 				F02013871C60592F003F8A04 /* Assets.xcassets in Resources */,
@@ -247,6 +250,7 @@
 				DB4BF5C62374765100EFE4BE /* ResultBoard.swift in Sources */,
 				DB4BF5C2237450F200EFE4BE /* GameScene.swift in Sources */,
 				DBC388CF23740E64008A0481 /* ControlCentre.swift in Sources */,
+				DB7F1B80256D020100370252 /* HapticsManager.swift in Sources */,
 				F020137C1C60592F003F8A04 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

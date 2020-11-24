@@ -16,7 +16,6 @@ class GameViewController: UIViewController {
 
     override var keyCommands: [UIKeyCommand]? { [
         UIKeyCommand(input: "j", modifierFlags: .command, action: #selector(commandAction(_:)), discoverabilityTitle: "Jump"),
-        UIKeyCommand(input: "r", modifierFlags: .command, action: #selector(commandAction(_:)), discoverabilityTitle: "Restart"),
     ] }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -48,9 +47,7 @@ class GameViewController: UIViewController {
 
     @objc func commandAction(_ command: UIKeyCommand) {
         if command.input == "j" {
-            ControlCentre.trigger(.touch(nil))
-        } else if command.input == "r" {
-            ControlCentre.trigger(.restart)
+            ControlCentre.trigger(.jump(.keyboard))
         }
     }
 }
