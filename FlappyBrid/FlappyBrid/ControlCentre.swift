@@ -27,12 +27,12 @@ class ControlCentre {
         addNotifications()
     }
 
-    class func subscrpt(_ delegate: ControlCentreDelegate & AnyObject) {
+    class func subscribe(_ delegate: ControlCentreDelegate & AnyObject) {
         if share.delegates.contains(delegate) { return }
         share.delegates.add(delegate)
     }
 
-    class func remove(_ delegate: ControlCentreDelegate & AnyObject) {
+    class func unsubscribe(_ delegate: ControlCentreDelegate & AnyObject) {
         if share.delegates.contains(delegate) {
             share.delegates.remove(delegate)
         }

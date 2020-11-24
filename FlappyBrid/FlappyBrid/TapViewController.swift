@@ -44,7 +44,7 @@ class TapViewController: UIViewController {
             actionBtn.heightAnchor.constraint(equalToConstant: 60),
         ])
         addNotis()
-        ControlCentre.subscrpt(self)
+        ControlCentre.subscribe(self)
     }
 
     private func addNotis() {

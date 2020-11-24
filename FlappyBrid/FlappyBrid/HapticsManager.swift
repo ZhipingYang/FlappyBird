@@ -9,6 +9,7 @@
 import CoreHaptics
 import GameController
 
+@available(iOS 14.0, *)
 fileprivate enum HapticType {
     case jump(type: EventType.JumpType), dead
     var fileText: String {
@@ -20,7 +21,7 @@ fileprivate enum HapticType {
 
     var mapText: String {
         switch self {
-        case let .jump(t): return "jump:\(t.rawValue)"
+        case let .jump(t): return "\(GCController.current.hashValue)_jump_\(t.rawValue)"
         case .dead: return "dead"
         }
     }
@@ -29,42 +30,16 @@ fileprivate enum HapticType {
 @available(iOS 14.0, *)
 class HapticsManager {
     static let share = HapticsManager()
-
-    private var controllers = [GCController]()
     private var engineMap = [String: CHHapticEngine?]()
 
     func start() {
-        controllers = GCController.controllers()
-        addNotifications()
-        ControlCentre.subscrpt(self)
+        engineMap.removeAll()
+        ControlCentre.subscribe(self)
     }
 
     func stop() {
-        controllers.removeAll()
-        NotificationCenter.default.removeObserver(self)
-        ControlCentre.remove(self)
-    }
-
-    private func addNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(didConnectController), name: .GCControllerDidConnect, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didDisconnectController), name: .GCControllerDidDisconnect, object: nil)
-        GCController.startWirelessControllerDiscovery {
-            print("there are no any game controller!")
-        }
-    }
-
-    @objc func didConnectController(_ notification: Notification) {
-        guard let controller = notification.object as? GCController else { return }
-        if !controllers.contains(controller) {
-            controllers.append(controller)
-        }
-    }
-
-    @objc func didDisconnectController(_ notification: Notification) {
-        guard let controller = notification.object as? GCController else { return }
-        if controllers.contains(controller) {
-            controllers.append(controller)
-        }
+        engineMap.removeAll()
+        ControlCentre.unsubscribe(self)
     }
 
     private func play(_ type: HapticType) {
@@ -89,15 +64,12 @@ class HapticsManager {
         var locality = GCHapticsLocality.default
         if case let .jump(type: jumpType) = type {
             switch jumpType {
-            case .buttonA:
-                locality = .rightHandle
-            case .rightTrigger:
-                locality = .rightTrigger
-            default:
-                return nil
+            case .buttonA: locality = .rightHandle
+            case .rightTrigger: locality = .rightTrigger
+            default: return nil
             }
         }
-        guard let engine = controllers.first?.haptics?.createEngine(withLocality: locality) else { return nil }
+        guard let engine = GCController.current?.haptics?.createEngine(withLocality: locality) else { return nil }
         engineMap[type.mapText] = engine
         return engine
     }

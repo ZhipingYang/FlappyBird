@@ -132,7 +132,7 @@ class GameScene: SKScene {
         moving.speed = 0
         bird.speed = 0
         bird.physicsBody?.isDynamic = false
-        ControlCentre.subscrpt(self)
+        ControlCentre.subscribe(self)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -268,8 +268,6 @@ extension GameScene: ControlCentreDelegate {
         switch event {
         case .jump:
             touchAction()
-        //        case .restart:
-        //            resetScene()
         case .gameover:
             gameOver()
         }
