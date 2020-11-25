@@ -8,12 +8,13 @@
 	<image width=44% alt="CI Status" src="https://user-images.githubusercontent.com/9360037/100103522-f7fa8400-2e9f-11eb-81a3-23141ab53309.png">
 </p>
 
-**Support haptics and rumble (iOS14)**
+support haptics and rumble (iOS14)
 
 - Xbox One S/X Controller (not include XboxOne)
 - Xbox Series Controller
 - PS 4/5 Controller
-- MagicKeyboard
+- MagicKeyboard Input Control
+- Mouse Input Control
 
 ## Support External Display
 
