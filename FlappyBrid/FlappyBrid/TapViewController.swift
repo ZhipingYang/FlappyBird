@@ -13,7 +13,11 @@ class TapViewController: UIViewController {
     lazy var textLabel = UILabel().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.textColor = .darkText
-        $0.text = "No Game Controller"
+        if #available(iOS 14.0, *) {
+            $0.text = GCController.current?.productCategory ?? "No Game Controller"
+        } else {
+            $0.text = "No Game Controller"
+        }
         $0.font = UIFont.systemFont(ofSize: 22)
     }
 
@@ -27,6 +31,10 @@ class TapViewController: UIViewController {
         $0.clipsToBounds = true
         $0.backgroundColor = .lightGray
     }
+
+    override var keyCommands: [UIKeyCommand]? { [
+        UIKeyCommand(input: "j", modifierFlags: .command, action: #selector(commandAction(_:)), discoverabilityTitle: "Jump"),
+    ] }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,6 +76,12 @@ class TapViewController: UIViewController {
 
     @objc func actionClick() {
         ControlCentre.trigger(.jump(.touch))
+    }
+
+    @objc func commandAction(_ command: UIKeyCommand) {
+        if command.input == "j" {
+            ControlCentre.trigger(.jump(.keyboard))
+        }
     }
 }
 

@@ -45,6 +45,10 @@ class ControlCentre {
 
 extension ControlCentre {
     private func addNotifications() {
+        if #available(iOS 14.0, *) {
+            NotificationCenter.default.addObserver(self, selector: #selector(didConnectKeyboard), name: .GCKeyboardDidConnect, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(didConnectMouse), name: .GCMouseDidConnect, object: nil)
+        }
         NotificationCenter.default.addObserver(self, selector: #selector(didConnectController), name: .GCControllerDidConnect, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didDisconnectController), name: .GCControllerDidDisconnect, object: nil)
         GCController.startWirelessControllerDiscovery {
@@ -54,11 +58,18 @@ extension ControlCentre {
 
     @objc func didConnectController(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
+//        GCController.current
+
         let buttonAHandler: GCControllerButtonValueChangedHandler = { button, value, pressed in
             print("buttonA:\(button) value:\(value) pressed:\(pressed)")
+            if #available(iOS 14.0, *) {
+                let color = pressed ? GCColor(red: 1, green: 1, blue: 1) : GCColor(red: 0, green: 0, blue: 0)
+                controller.light?.color = color
+            }
             guard pressed else { return }
             ControlCentre.trigger(.jump(.buttonA))
         }
+
         let rightTriggerHandler: GCControllerButtonValueChangedHandler = { button, value, pressed in
             print("rightTrigger:\(button) value:\(value) pressed:\(pressed)")
             guard pressed else { return }
@@ -67,11 +78,59 @@ extension ControlCentre {
         controller.extendedGamepad?.buttonA.pressedChangedHandler = buttonAHandler
         controller.extendedGamepad?.rightTrigger.pressedChangedHandler = rightTriggerHandler
 
+        // test new iOS features
         let thumbstickHandler: GCControllerDirectionPadValueChangedHandler = { directionPad, x, y in
             print("directionPad:\(directionPad) x:\(x) y:\(y)")
         }
         controller.extendedGamepad?.leftThumbstick.valueChangedHandler = thumbstickHandler
         controller.extendedGamepad?.rightThumbstick.valueChangedHandler = thumbstickHandler
+
+        if #available(iOS 14.0, *) {
+            guard let motion = controller.motion else { return }
+            if motion.sensorsRequireManualActivation {
+                motion.sensorsActive = true
+            }
+            motion.valueChangedHandler = { motion in
+                print(motion)
+            }
+        }
+    }
+
+    @available(iOS 14.0, *)
+    @objc func didConnectKeyboard(_ notification: Notification) {
+        guard
+            let keyboard = notification.object as? GCKeyboard,
+            let keyboardInput = keyboard.keyboardInput
+        else { return }
+//        GCKeyboard.coalesced
+
+        let handle: GCControllerButtonValueChangedHandler = { keyboard, value, pressed in
+            guard pressed else { return }
+            ControlCentre.trigger(.jump(.keyboard))
+        }
+        keyboardInput.button(forKeyCode: .spacebar)?.valueChangedHandler = handle
+        keyboardInput.button(forKeyCode: .upArrow)?.valueChangedHandler = handle
+        keyboardInput.keyChangedHandler = { keyboard, key, keyCode, pressed in
+            if (keyCode == .upArrow || keyCode == .spacebar) && pressed {
+                print("jump key:\(key)")
+            } else {
+                print("other key:\(key)")
+            }
+        }
+    }
+
+    @available(iOS 14.0, *)
+    @objc func didConnectMouse(_ notification: Notification) {
+        guard let mouse = notification.object as? GCMouse else { return }
+//        GCMouse.current
+
+        mouse.mouseInput?.mouseMovedHandler = { mouse, x, y in
+            print("mouse:\(mouse) x:\(x) y:\(y)")
+        }
+        mouse.mouseInput?.leftButton.pressedChangedHandler = { btn, value, pressed in
+            guard pressed else { return }
+            ControlCentre.trigger(.jump(.keyboard))
+        }
     }
 
     @objc func didDisconnectController(_ notification: Notification) {}
