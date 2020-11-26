@@ -59,24 +59,20 @@ extension ControlCentre {
     @objc func didConnectController(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
 //        GCController.current
-
-        let buttonAHandler: GCControllerButtonValueChangedHandler = { button, value, pressed in
-            print("buttonA:\(button) value:\(value) pressed:\(pressed)")
-            if #available(iOS 14.0, *) {
-                let color = pressed ? GCColor(red: 1, green: 1, blue: 1) : GCColor(red: 0, green: 0, blue: 0)
-                controller.light?.color = color
+        
+        func getHandler(jumpType: EventType.JumpType) -> GCControllerButtonValueChangedHandler {
+            return { button, value, pressed in
+                print("buttonA:\(button) value:\(value) pressed:\(pressed)")
+                if #available(iOS 14.0, *) {
+                    let color = pressed ? GCColor(red: 1, green: 1, blue: 1) : GCColor(red: 0, green: 0, blue: 0)
+                    controller.light?.color = color
+                }
+                guard pressed else { return }
+                ControlCentre.trigger(.jump(jumpType))
             }
-            guard pressed else { return }
-            ControlCentre.trigger(.jump(.buttonA))
         }
-
-        let rightTriggerHandler: GCControllerButtonValueChangedHandler = { button, value, pressed in
-            print("rightTrigger:\(button) value:\(value) pressed:\(pressed)")
-            guard pressed else { return }
-            ControlCentre.trigger(.jump(.rightTrigger))
-        }
-        controller.extendedGamepad?.buttonA.pressedChangedHandler = buttonAHandler
-        controller.extendedGamepad?.rightTrigger.pressedChangedHandler = rightTriggerHandler
+        controller.extendedGamepad?.buttonA.pressedChangedHandler = getHandler(jumpType: .buttonA)
+        controller.extendedGamepad?.rightTrigger.pressedChangedHandler = getHandler(jumpType: .rightTrigger)
 
         // test new iOS features
         let thumbstickHandler: GCControllerDirectionPadValueChangedHandler = { directionPad, x, y in
@@ -87,11 +83,29 @@ extension ControlCentre {
 
         if #available(iOS 14.0, *) {
             guard let motion = controller.motion else { return }
-            if motion.sensorsRequireManualActivation {
-                motion.sensorsActive = true
-            }
+            // manual set sensor active
+            if motion.sensorsRequireManualActivation { motion.sensorsActive = true }
+
+            var minValue: Double = -1
+            var maxValue: Double = 1
+            let dis: Double = 3
             motion.valueChangedHandler = { motion in
-                print(motion)
+                let x = motion.acceleration.x
+                if x > maxValue {
+                    maxValue = x
+                    if maxValue - minValue > dis {
+                        ControlCentre.trigger(.jump(.buttonA))
+                        minValue = -1
+                        maxValue = 1
+                    }
+                } else if x < minValue {
+                    minValue = x
+                    if maxValue - minValue > dis {
+                        ControlCentre.trigger(.jump(.buttonA))
+                        minValue = -1
+                        maxValue = 1
+                    }
+                }
             }
         }
     }

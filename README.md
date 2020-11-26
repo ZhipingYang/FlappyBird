@@ -8,7 +8,7 @@
 	<image width=44% alt="CI Status" src="https://user-images.githubusercontent.com/9360037/100103522-f7fa8400-2e9f-11eb-81a3-23141ab53309.png">
 </p>
 
-support haptics and rumble (iOS14)
+support haptics, rumble (iOS14) and Motion
 
 - Xbox One S/X Controller (not include XboxOne)
 - Xbox Series Controller
