@@ -42,16 +42,37 @@ class HapticsManager {
         ControlCentre.unsubscribe(self)
     }
 
-    private func play(_ type: HapticType) {
+    private func playCustom(_ type: HapticType) {
+        guard let engine = getEngine(type) else { return }
+        do {
+            try engine.start()
+            guard let pattern = try self.getPattern(type) else { return }
+            let palyer = try engine.makePlayer(with: pattern)
+            try palyer.start(atTime: CHHapticTimeImmediate)
+        } catch {
+            print("The engine failed: \(error)")
+        }
+    }
+
+    private func playCustomPattern(_ type: HapticType) {
+        guard let engine = getEngine(type) else { return }
+        do {
+            try engine.start()
+            guard let pattern = try self.getPattern(type) else { return }
+            let palyer = try engine.makePlayer(with: pattern)
+            try palyer.start(atTime: CHHapticTimeImmediate)
+        } catch {
+            print("The engine failed: \(error)")
+        }
+    }
+
+    private func playJsonPattern(_ type: HapticType) {
         guard
             let engine = getEngine(type),
             let url = Bundle.main.url(forResource: type.fileText, withExtension: "ahap")
         else { return }
-
         do {
             try engine.start()
-//            guard let pattern = try self.getPattern(type) else { return }
-//            try engine.makePlayer(with: pattern)
             try engine.playPattern(from: url)
         } catch {
             print("The engine failed: \(error)")
@@ -104,9 +125,9 @@ class HapticsManager {
 extension HapticsManager: ControlCentreDelegate {
     func callback(_ event: EventType) {
         if case .gameover = event {
-            play(.dead)
+            playJsonPattern(.dead)
         } else if case let .jump(type) = event {
-            play(.jump(type: type))
+            playJsonPattern(.jump(type: type))
         }
     }
 }
